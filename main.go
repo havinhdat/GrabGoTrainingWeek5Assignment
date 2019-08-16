@@ -8,9 +8,14 @@ import (
 	"grab/week5/GrabGoTrainingWeek5Assignment/renderer"
 )
 
+const (
+	getPostsEndpoint    = "https://my-json-server.typicode.com/typicode/demo/posts"
+	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
+)
+
 func main() {
-	postSerice := &post.PostService{}
-	commentService := &comment.CommentService{}
+	postSerice := post.NewPostService(getPostsEndpoint)
+	commentService := comment.NewCommentService(getCommentsEndpoint)
 	pwcService := pwc.NewPostWithCommentService(postSerice, commentService)
 	renderService := &renderer.JsonRender{}
 	httpService := httpservice.NewPostWithCommentHttpService(pwcService, renderService)

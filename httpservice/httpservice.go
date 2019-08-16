@@ -2,21 +2,24 @@ package httpservice
 
 import (
 	pwc "grab/week5/GrabGoTrainingWeek5Assignment/postwithcomment"
-	"grab/week5/GrabGoTrainingWeek5Assignment/renderer"
 	"log"
 	"net/http"
 )
 
-type PostWithCommentsResponse struct {
-	Posts []pwc.PostWithComments `json:"posts"`
+type PostWithCommentsInterface interface {
+	GetPostWithComments() ([]pwc.PostWithComments, error)
+}
+
+type RendererInterface interface {
+	Render(interface{}) ([]byte, string, error)
 }
 
 type PostWithCommentHttpService struct {
-	postWithCommentService pwc.PostWithCommentsInterface
-	renderService          renderer.Renderer
+	postWithCommentService PostWithCommentsInterface
+	renderService          RendererInterface
 }
 
-func NewPostWithCommentHttpService(pwcService pwc.PostWithCommentsInterface, renderService renderer.Renderer) *PostWithCommentHttpService {
+func NewPostWithCommentHttpService(pwcService PostWithCommentsInterface, renderService RendererInterface) *PostWithCommentHttpService {
 	service := &PostWithCommentHttpService{pwcService, renderService}
 	return service
 }
