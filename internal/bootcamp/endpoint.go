@@ -16,7 +16,7 @@ type BlogEndpoint interface {
 }
 
 type BlogEndpointImpl struct {
-	service Blog
+	service BlogService
 }
 
 func NewBlogEndpointImpl() *BlogEndpointImpl {

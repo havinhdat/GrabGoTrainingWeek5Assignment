@@ -6,20 +6,20 @@ import (
 	"net/http"
 )
 
-type Blog interface {
+type BlogService interface {
 	GetPostWithComments() (*[]PostWithComments, error)
 }
 
-type BlogImpl struct {
+type BlogServiceImpl struct {
 	postsEndpoint    string
 	commentsEndpoint string
 }
 
-func NewBlogImpl(postsEndpoint string, commentsEndpoint string) *BlogImpl {
-	return &BlogImpl{postsEndpoint: postsEndpoint, commentsEndpoint: commentsEndpoint}
+func NewBlogImpl(postsEndpoint string, commentsEndpoint string) *BlogServiceImpl {
+	return &BlogServiceImpl{postsEndpoint: postsEndpoint, commentsEndpoint: commentsEndpoint}
 }
 
-func (p *BlogImpl) GetPostWithComments() (*[]PostWithComments, error) {
+func (p *BlogServiceImpl) GetPostWithComments() (*[]PostWithComments, error) {
 	commentsByPostID := map[int64][]Comment{}
 
 	comments, err := p.getComments()
@@ -47,7 +47,7 @@ func (p *BlogImpl) GetPostWithComments() (*[]PostWithComments, error) {
 	return &result, nil
 }
 
-func (p *BlogImpl) getPosts() ([]Post, error) {
+func (p *BlogServiceImpl) getPosts() ([]Post, error) {
 	resp, err := http.Get(p.postsEndpoint)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (p *BlogImpl) getPosts() ([]Post, error) {
 	return posts, nil
 }
 
-func (p *BlogImpl) getComments() ([]Comment, error) {
+func (p *BlogServiceImpl) getComments() ([]Comment, error) {
 	resp, err := http.Get(p.commentsEndpoint)
 	if err != nil {
 		return nil, err
