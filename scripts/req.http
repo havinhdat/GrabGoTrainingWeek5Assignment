@@ -10,3 +10,9 @@ GET http://localhost:8080/postWithComments
 Accept: application/json
 
 ###
+
+
+GET http://localhost:8080/postWithCommentsInXml
+Accept: application/json
+
+###
