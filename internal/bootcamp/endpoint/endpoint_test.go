@@ -4,9 +4,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	_ "github.com/stretchr/testify/mock"
+	tmocks "grab/internal/bootcamp/encode/mocks"
 	"grab/internal/bootcamp/model"
 	"grab/internal/bootcamp/service/mocks"
-	tmocks "grab/internal/bootcamp/transport/mocks"
 	"net/http/httptest"
 	"testing"
 )

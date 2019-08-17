@@ -1,4 +1,4 @@
-package transport
+package encode
 
 import (
 	"github.com/stretchr/testify/assert"

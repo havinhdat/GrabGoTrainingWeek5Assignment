@@ -1,8 +1,8 @@
 package endpoint
 
 import (
+	"grab/internal/bootcamp/encode"
 	"grab/internal/bootcamp/service"
-	"grab/internal/bootcamp/transport"
 	"log"
 	"net/http"
 )
@@ -13,10 +13,10 @@ type BlogEndpoint interface {
 
 type BlogEndpointImpl struct {
 	service service.BlogService
-	encoder transport.EncodeResponse
+	encoder encode.EncodeResponse
 }
 
-func NewBlogEndpointImpl(service service.BlogService, encoder transport.EncodeResponse) *BlogEndpointImpl {
+func NewBlogEndpointImpl(service service.BlogService, encoder encode.EncodeResponse) *BlogEndpointImpl {
 	return &BlogEndpointImpl{service: service, encoder: encoder}
 }
 

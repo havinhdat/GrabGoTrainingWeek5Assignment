@@ -1,9 +1,9 @@
 package bootcamp
 
 import (
+	"grab/internal/bootcamp/encode"
 	"grab/internal/bootcamp/endpoint"
 	"grab/internal/bootcamp/service"
-	"grab/internal/bootcamp/transport"
 	"log"
 	"net/http"
 )
@@ -15,11 +15,11 @@ const (
 
 func StartServer() {
 	blogService := service.NewBlogServiceImpl(getPostsEndpoint, getCommentsEndpoint)
-	jsonEndpoint := endpoint.NewBlogEndpointImpl(blogService, transport.NewJsonResponseEncoder())
+	jsonEndpoint := endpoint.NewBlogEndpointImpl(blogService, encode.NewJsonResponseEncoder())
 
 	http.HandleFunc("/postWithComments", jsonEndpoint.GetPostsWithComments)
 
-	xmlEndpoint := endpoint.NewBlogEndpointImpl(blogService, transport.NewXmlResponseEncoder())
+	xmlEndpoint := endpoint.NewBlogEndpointImpl(blogService, encode.NewXmlResponseEncoder())
 	http.HandleFunc("/postWithCommentsInXml", xmlEndpoint.GetPostsWithComments)
 
 	log.Println("httpServer starts ListenAndServe at 8080")
