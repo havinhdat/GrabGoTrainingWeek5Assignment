@@ -6,25 +6,19 @@ import (
 	"net/http"
 )
 
-const (
-	getPostsEndpoint    = "https://my-json-server.typicode.com/typicode/demo/posts"
-	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
-)
-
 type BlogEndpoint interface {
 	GetPostsWithComments(writer http.ResponseWriter, request *http.Request)
 }
 
-type BlogEndpointImpl struct {
+type blogEndpoint struct {
 	service BlogService
 }
 
-func NewBlogEndpointImpl() *BlogEndpointImpl {
-	blog := NewBlogImpl(getPostsEndpoint, getCommentsEndpoint)
-	return &BlogEndpointImpl{blog}
+func newBlogEndpoint(service BlogService) *blogEndpoint {
+	return &blogEndpoint{service: service}
 }
 
-func (b *BlogEndpointImpl) GetPostsWithComments(writer http.ResponseWriter, request *http.Request) {
+func (b *blogEndpoint) GetPostsWithComments(writer http.ResponseWriter, request *http.Request) {
 	posts, err := b.service.GetPostWithComments()
 	if err == nil {
 		buf, err := json.Marshal(posts)

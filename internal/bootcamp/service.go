@@ -10,16 +10,18 @@ type BlogService interface {
 	GetPostWithComments() (*[]PostWithComments, error)
 }
 
-type BlogServiceImpl struct {
+type BlogMiddleware func(BlogService) BlogService
+
+type blogService struct {
 	postsEndpoint    string
 	commentsEndpoint string
 }
 
-func NewBlogImpl(postsEndpoint string, commentsEndpoint string) *BlogServiceImpl {
-	return &BlogServiceImpl{postsEndpoint: postsEndpoint, commentsEndpoint: commentsEndpoint}
+func newBlogService(postsEndpoint string, commentsEndpoint string) *blogService {
+	return &blogService{postsEndpoint: postsEndpoint, commentsEndpoint: commentsEndpoint}
 }
 
-func (p *BlogServiceImpl) GetPostWithComments() (*[]PostWithComments, error) {
+func (p *blogService) GetPostWithComments() (*[]PostWithComments, error) {
 	commentsByPostID := map[int64][]Comment{}
 
 	comments, err := p.getComments()
@@ -47,7 +49,7 @@ func (p *BlogServiceImpl) GetPostWithComments() (*[]PostWithComments, error) {
 	return &result, nil
 }
 
-func (p *BlogServiceImpl) getPosts() ([]Post, error) {
+func (p *blogService) getPosts() ([]Post, error) {
 	resp, err := http.Get(p.postsEndpoint)
 	if err != nil {
 		return nil, err
@@ -65,7 +67,7 @@ func (p *BlogServiceImpl) getPosts() ([]Post, error) {
 	return posts, nil
 }
 
-func (p *BlogServiceImpl) getComments() ([]Comment, error) {
+func (p *blogService) getComments() ([]Comment, error) {
 	resp, err := http.Get(p.commentsEndpoint)
 	if err != nil {
 		return nil, err
