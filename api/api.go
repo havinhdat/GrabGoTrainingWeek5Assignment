@@ -4,20 +4,22 @@ import (
 	"net/http"
 
 	comment_getter "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/comment"
+	comment_model "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/comment/model"
 	encoder "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/encode"
 	error_handler "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/errorhandler"
 	post_getter "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/post"
 	post_comment_combiner "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/post-comment"
+	post_comment_model "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/post-comment/model"
 )
 
 type PostWithCommentsResponse struct {
-	Posts []post_comment_combiner.PostWithComments `json:"posts"`
+	Posts []post_comment_model.PostWithComments `json:"posts"`
 }
 
 type PostWithComments struct {
-	ID       int64                    `json:"id"`
-	Title    string                   `json:"string"`
-	Comments []comment_getter.Comment `json:"comments,omitempty"`
+	ID       int64                   `json:"id"`
+	Title    string                  `json:"string"`
+	Comments []comment_model.Comment `json:"comments,omitempty"`
 }
 
 type Api interface {

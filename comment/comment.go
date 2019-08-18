@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
+	comment_model "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/comment/model"
 	httpclient "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/http-client"
 )
 
@@ -11,21 +12,15 @@ const (
 	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
 )
 
-type Comment struct {
-	ID     int64  `json:"id"`
-	Body   string `json:"body"`
-	PostID int64  `json:"postId"`
-}
-
 type CommentGetter interface {
-	GetComments() ([]Comment, error)
+	GetComments() ([]comment_model.Comment, error)
 }
 
 type CommentGetterImpl struct {
 	httpClient httpclient.HTTPClient
 }
 
-func (commentGetter *CommentGetterImpl) GetComments() ([]Comment, error) {
+func (commentGetter *CommentGetterImpl) GetComments() ([]comment_model.Comment, error) {
 	resp, err := commentGetter.httpClient.Get(getCommentsEndpoint)
 	if err != nil {
 		return nil, err
@@ -35,7 +30,7 @@ func (commentGetter *CommentGetterImpl) GetComments() ([]Comment, error) {
 		_ = resp.Body.Close()
 	}()
 
-	var comments []Comment
+	var comments []comment_model.Comment
 	if err = json.Unmarshal(body, &comments); err != nil {
 		return nil, err
 	}

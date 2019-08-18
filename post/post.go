@@ -5,26 +5,22 @@ import (
 	"io/ioutil"
 
 	httpclient "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/http-client"
+	post_model "dat.havinh/week5-assignment/GrabGoTrainingWeek5Assignment/post/model"
 )
 
 const (
 	getPostsEndpoint = "https://my-json-server.typicode.com/typicode/demo/posts"
 )
 
-type Post struct {
-	ID    int64  `json:"id"`
-	Title string `json:"title"`
-}
-
 type PostGetter interface {
-	GetPosts() ([]Post, error)
+	GetPosts() ([]post_model.Post, error)
 }
 
 type PostGetterImpl struct {
 	httpClient httpclient.HTTPClient
 }
 
-func (postGetter *PostGetterImpl) GetPosts() ([]Post, error) {
+func (postGetter *PostGetterImpl) GetPosts() ([]post_model.Post, error) {
 	resp, err := postGetter.httpClient.Get(getPostsEndpoint)
 	if err != nil {
 		return nil, err
@@ -34,7 +30,7 @@ func (postGetter *PostGetterImpl) GetPosts() ([]Post, error) {
 		_ = resp.Body.Close()
 	}()
 
-	var posts []Post
+	var posts []post_model.Post
 	if err = json.Unmarshal(body, &posts); err != nil {
 		return nil, err
 	}
