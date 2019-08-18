@@ -6,6 +6,7 @@ type Comment struct {
 	PostID int64  `json:"postId"`
 }
 
+//go:generate mockery -name=CommentInterface -inpkg
 type CommentInterface interface {
 	GetComments() ([]Comment, error)
 }

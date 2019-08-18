@@ -5,6 +5,7 @@ type Post struct {
 	Title string `json:"title"`
 }
 
+//go:generate mockery -name=PostInterface -inpkg
 type PostInterface interface {
 	GetPosts() ([]Post, error)
 }
