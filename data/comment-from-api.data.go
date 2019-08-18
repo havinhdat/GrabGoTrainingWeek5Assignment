@@ -2,14 +2,21 @@ package data
 
 import(
 	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/core/entity"
-	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/mapper"
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/data/dataformatter"
 	"net/http"
 	"io/ioutil"
 )
 
 // CommentData data
 type CommentData struct {
-	Mapper mapper.Mapper
+	DataFormatter dataformatter.DataFormatter
+}
+
+// NewCommentData func
+func NewCommentData(dataformatter dataformatter.DataFormatter) *CommentData {
+	return &CommentData{
+		DataFormatter: dataformatter,
+	}
 }
 
 // GetComments get all comments
@@ -24,7 +31,7 @@ func (data *CommentData) GetComments() ([]entity.Comment, error) {
 	}()
 
 	var comments []entity.Comment
-	if err = data.Mapper.Decode(body, &comments); err != nil {
+	if err = data.DataFormatter.Decode(body, &comments); err != nil {
 		return nil, err
 	}
 

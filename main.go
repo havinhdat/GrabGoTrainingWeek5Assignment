@@ -6,13 +6,14 @@ import (
 
 	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/core/usecase"
 	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/data"
-	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/mapper"
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/data/dataformatter"
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/formatter"
 )
 
 type requestHandler struct {
-	endPoint string
-	useCase  usecase.Usecase
-	mapper   mapper.Mapper
+	endPoint  string
+	useCase   usecase.Usecase
+	formatter formatter.Formatter
 }
 
 func handleRequest(rq *requestHandler) {
@@ -26,7 +27,7 @@ func handleRequest(rq *requestHandler) {
 		}
 
 		// encoding data
-		buf, err := rq.mapper.Encode(ret)
+		buf, err := rq.formatter.Encode(ret)
 		if err != nil {
 			log.Println("unable to parse response: ", err)
 			writer.WriteHeader(500)
@@ -38,29 +39,26 @@ func handleRequest(rq *requestHandler) {
 	})
 }
 
+func newGetPostsWithCommentsUsecase() *usecase.GetPostsWithCommentsUsecase {
+	dataFormatter := &dataformatter.JSONDataFormatter{}
+	postData := data.NewPostData(dataFormatter)
+	getPostsUsecase := usecase.NewGetPostsUsecase(postData)
+	commentData := data.NewCommentData(dataFormatter)
+	getCommentsUsecase := usecase.NewGetCommentsUsecase(commentData)
+
+	return usecase.NewGetPostsWithCommentsUsecase(getPostsUsecase, getCommentsUsecase)
+}
+
 func main() {
-	// define mapper
-	// notice: when use XMLMapper, GetPosts and GetComments have to return xml format
-	// currently return json
-	mapper := &mapper.JSONMapper{}
+	// define my mapper
+	myFormatter := &formatter.JSONFormatter{}
 	// define usecase
-	getPostsWithCommentsUsecase := &usecase.GetPostsWithCommentsUsecase{
-		GetPosts: usecase.GetPostsUsecase{
-			Repo: &data.PostData{
-				Mapper: mapper,
-			},
-		},
-		GetComments: usecase.GetCommentsUsecase{
-			Repo: &data.CommentData{
-				Mapper: mapper,
-			},
-		},
-	}
+	getPostsWithCommentsUsecase := newGetPostsWithCommentsUsecase()
 	// define handler
 	handleRequest(&requestHandler{
-		endPoint: "/posts-with-comments",
-		useCase:  getPostsWithCommentsUsecase,
-		mapper:   mapper,
+		endPoint:  "/posts-with-comments",
+		useCase:   getPostsWithCommentsUsecase,
+		formatter: myFormatter,
 	})
 
 	log.Println("httpServer starts ListenAndServe at 8080")

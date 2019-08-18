@@ -1,6 +1,7 @@
-package mapper
+package formatter
 
-type Mapper interface {
+// Formatter data
+type Formatter interface {
 	Encode(data interface{}) ([]byte, error)
 	Decode(data []byte, v interface{}) error
 }

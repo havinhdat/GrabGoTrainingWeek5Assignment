@@ -6,8 +6,16 @@ import (
 
 //GetPostsWithCommentsUsecase usecase
 type GetPostsWithCommentsUsecase struct {
-	GetPosts GetPostsUsecase
-	GetComments GetCommentsUsecase
+	GetPosts *GetPostsUsecase
+	GetComments *GetCommentsUsecase
+}
+
+// NewGetPostsWithCommentsUsecase func
+func NewGetPostsWithCommentsUsecase(getPosts *GetPostsUsecase, getComments *GetCommentsUsecase) *GetPostsWithCommentsUsecase {
+	return &GetPostsWithCommentsUsecase {
+		GetPosts: getPosts,
+		GetComments: getComments,
+	}
 }
 
 // Execute GetPostsWithCommentsUsecase
