@@ -5,5 +5,5 @@ import (
 )
 
 type PostWithCommentsResponse struct {
-	Posts []pwc.PostWithComments `json:"posts"`
+	Posts []pwc.PostWithComment `json:"posts"`
 }

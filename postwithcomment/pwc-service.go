@@ -15,7 +15,7 @@ func NewPostWithCommentService(postService post.PostInterface, commentService co
 	return service
 }
 
-func (service *PostWithCommentService) GetPostWithComments() ([]PostWithComments, error) {
+func (service *PostWithCommentService) GetPostWithComments() ([]PostWithComment, error) {
 	// Get posts from api
 	posts, err := service.postService.GetPosts()
 	if err != nil {
@@ -33,15 +33,15 @@ func (service *PostWithCommentService) GetPostWithComments() ([]PostWithComments
 	return postWithComments, nil
 }
 
-func combinePostWithComments(posts []post.Post, comments []comment.Comment) []PostWithComments {
+func combinePostWithComments(posts []post.Post, comments []comment.Comment) []PostWithComment {
 	commentsByPostID := map[int64][]comment.Comment{}
 	for _, comment := range comments {
 		commentsByPostID[comment.PostID] = append(commentsByPostID[comment.PostID], comment)
 	}
 
-	result := make([]PostWithComments, 0, len(posts))
+	result := make([]PostWithComment, 0, len(posts))
 	for _, post := range posts {
-		result = append(result, PostWithComments{
+		result = append(result, PostWithComment{
 			ID:       post.ID,
 			Title:    post.Title,
 			Comments: commentsByPostID[post.ID],
