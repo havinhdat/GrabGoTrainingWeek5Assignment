@@ -9,10 +9,10 @@
 
 TODO:
 
-- [OK] decouple API
-- [OK] decouple business
-- [OK] decouple rendering logic
-- [OK] Create XML rendering
-- [X] Add tests
-- [X] Remove explicit type casting on usecases (Go don't have generic)
-- [X] Clearly errors handling
+- [X] decouple API
+- [X] decouple business
+- [X] decouple rendering logic
+- [X] Create XML rendering
+- [] Add tests
+- [] Remove explicit type casting on usecases (Go don't have generic)
+- [] Clearly errors handling
