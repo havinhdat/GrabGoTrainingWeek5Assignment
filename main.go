@@ -14,7 +14,7 @@ func main() {
 	postSerice := post.NewPostService(httpClient)
 	commentService := comment.NewCommentService(httpClient)
 	pwcService := pwc.NewPostWithCommentService(postSerice, commentService)
-	renderService := &renderer.JsonRender{}
+	renderService := &renderer.XmlRender{}
 	httpService := httpservice.NewPostWithCommentHttpService(pwcService, renderService)
 	httpService.StartServer()
 }
