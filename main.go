@@ -1,121 +1,68 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/core/usecase"
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/data"
+	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/mapper"
 )
 
-const (
-	getPostsEndpoint    = "https://my-json-server.typicode.com/typicode/demo/posts"
-	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
-)
-
-type Post struct {
-	ID    int64  `json:"id"`
-	Title string `json:"title"`
-}
-type Comment struct {
-	ID     int64  `json:"id"`
-	Body   string `json:"body"`
-	PostID int64  `json:"postId"`
-}
-type PostWithCommentsResponse struct {
-	Posts []PostWithComments `json:"posts"`
-}
-type PostWithComments struct {
-	ID       int64     `json:"id"`
-	Title    string    `json:"string"`
-	Comments []Comment `json:"comments,omitempty"`
+type requestHandler struct {
+	endPoint string
+	useCase  usecase.Usecase
+	mapper   mapper.Mapper
 }
 
-//TODO: how to separate API logic, business logic and response format logic
-func main() {
-	http.HandleFunc("/postWithComments", func(writer http.ResponseWriter, request *http.Request) {
-		// Get posts from api
-		posts, err := getPosts()
+func handleRequest(rq *requestHandler) {
+	http.HandleFunc(rq.endPoint, func(writer http.ResponseWriter, request *http.Request) {
+		// executing usecase
+		ret, err := rq.useCase.Execute()
 		if err != nil {
-			log.Println("get posts failed with error: ", err)
+			log.Println("execute usecase failed with error: ", err)
 			writer.WriteHeader(500)
 			return
 		}
 
-		// Get comments from api
-		comments, err := getComments()
-		if err != nil {
-			log.Println("get comments failed with error: ", err)
-			writer.WriteHeader(500)
-			return
-		}
-
-		// Combine and return response
-		postWithComments := combinePostWithComments(posts, comments)
-		resp := PostWithCommentsResponse{Posts: postWithComments}
-		buf, err := json.Marshal(resp)
+		// encoding data
+		buf, err := rq.mapper.Encode(ret)
 		if err != nil {
 			log.Println("unable to parse response: ", err)
 			writer.WriteHeader(500)
 		}
 
+		// response to client
 		writer.Header().Set("Content-Type", "application/json")
 		_, err = writer.Write(buf)
+	})
+}
+
+func main() {
+	// define mapper
+	// notice: when use XMLMapper, GetPosts and GetComments have to return xml format
+	// currently return json
+	mapper := &mapper.JSONMapper{}
+	// define usecase
+	getPostsWithCommentsUsecase := &usecase.GetPostsWithCommentsUsecase{
+		GetPosts: usecase.GetPostsUsecase{
+			Repo: &data.PostData{
+				Mapper: mapper,
+			},
+		},
+		GetComments: usecase.GetCommentsUsecase{
+			Repo: &data.CommentData{
+				Mapper: mapper,
+			},
+		},
+	}
+	// define handler
+	handleRequest(&requestHandler{
+		endPoint: "/posts-with-comments",
+		useCase:  getPostsWithCommentsUsecase,
+		mapper:   mapper,
 	})
 
 	log.Println("httpServer starts ListenAndServe at 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func getPosts() ([]Post, error) {
-	resp, err := http.Get(getPostsEndpoint)
-	if err != nil {
-		return nil, err
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	var posts []Post
-	if err = json.Unmarshal(body, &posts); err != nil {
-		return nil, err
-	}
-
-	return posts, nil
-}
-
-func getComments() ([]Comment, error) {
-	resp, err := http.Get(getCommentsEndpoint)
-	if err != nil {
-		return nil, err
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	var comments []Comment
-	if err = json.Unmarshal(body, &comments); err != nil {
-		return nil, err
-	}
-
-	return comments, nil
-}
-
-func combinePostWithComments(posts []Post, comments []Comment) []PostWithComments {
-	commentsByPostID := map[int64][]Comment{}
-	for _, comment := range comments {
-		commentsByPostID[comment.PostID] = append(commentsByPostID[comment.PostID], comment)
-	}
-
-	result := make([]PostWithComments, 0, len(posts))
-	for _, post := range posts {
-		result = append(result, PostWithComments{
-			ID:       post.ID,
-			Title:    post.Title,
-			Comments: commentsByPostID[post.ID],
-		})
-	}
-
-	return result
 }
