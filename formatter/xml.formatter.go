@@ -6,6 +6,7 @@ import (
 
 // XMLFormatter data
 type XMLFormatter struct {
+	ContentType string
 }
 
 // Encode data
@@ -16,4 +17,9 @@ func (formatter *XMLFormatter) Encode(data interface{}) ([]byte, error) {
 // Decode data
 func (formatter *XMLFormatter) Decode(data []byte, v interface{}) error {
 	return xml.Unmarshal(data, v)
+}
+
+// GetContentType data
+func (formatter *XMLFormatter) GetContentType() string {
+	return formatter.ContentType
 }

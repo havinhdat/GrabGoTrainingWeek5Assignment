@@ -34,7 +34,7 @@ func handleRequest(rq *requestHandler) {
 		}
 
 		// response to client
-		writer.Header().Set("Content-Type", "application/json")
+		writer.Header().Set("Content-Type", rq.formatter.GetContentType())
 		_, err = writer.Write(buf)
 	})
 }
@@ -51,7 +51,9 @@ func newGetPostsWithCommentsUsecase() *usecase.GetPostsWithCommentsUsecase {
 
 func main() {
 	// define my mapper
-	myFormatter := &formatter.JSONFormatter{}
+	myFormatter := &formatter.JSONFormatter{
+		ContentType: "application/json",
+	}
 	// define usecase
 	getPostsWithCommentsUsecase := newGetPostsWithCommentsUsecase()
 	// define handler
