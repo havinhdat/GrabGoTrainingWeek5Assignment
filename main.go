@@ -6,16 +6,13 @@ import (
 	"grab/week5/GrabGoTrainingWeek5Assignment/post"
 	pwc "grab/week5/GrabGoTrainingWeek5Assignment/postwithcomment"
 	"grab/week5/GrabGoTrainingWeek5Assignment/renderer"
-)
-
-const (
-	getPostsEndpoint    = "https://my-json-server.typicode.com/typicode/demo/posts"
-	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
+	"net/http"
 )
 
 func main() {
-	postSerice := post.NewPostService(getPostsEndpoint)
-	commentService := comment.NewCommentService(getCommentsEndpoint)
+	httpClient := http.DefaultClient
+	postSerice := post.NewPostService(httpClient)
+	commentService := comment.NewCommentService(httpClient)
 	pwcService := pwc.NewPostWithCommentService(postSerice, commentService)
 	renderService := &renderer.JsonRender{}
 	httpService := httpservice.NewPostWithCommentHttpService(pwcService, renderService)

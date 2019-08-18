@@ -2,21 +2,25 @@ package comment
 
 import (
 	"encoding/json"
+	"grab/week5/GrabGoTrainingWeek5Assignment/httpclient"
 	"io/ioutil"
-	"net/http"
+)
+
+const (
+	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
 )
 
 type CommentService struct {
-	endpoint string
+	httpClient httpclient.HTTPClient
 }
 
-func NewCommentService(endpoint string) *CommentService {
-	service := &CommentService{endpoint}
+func NewCommentService(httpClient httpclient.HTTPClient) *CommentService {
+	service := &CommentService{httpClient}
 	return service
 }
 
 func (commentService *CommentService) GetComments() ([]Comment, error) {
-	resp, err := http.Get(commentService.endpoint)
+	resp, err := commentService.httpClient.Get(getCommentsEndpoint)
 	if err != nil {
 		return nil, err
 	}

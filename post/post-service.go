@@ -2,21 +2,25 @@ package post
 
 import (
 	"encoding/json"
+	"grab/week5/GrabGoTrainingWeek5Assignment/httpclient"
 	"io/ioutil"
-	"net/http"
+)
+
+const (
+	getPostsEndpoint = "https://my-json-server.typicode.com/typicode/demo/posts"
 )
 
 type PostService struct {
-	endpoints string
+	httpClient httpclient.HTTPClient
 }
 
-func NewPostService(endpoint string) *PostService {
-	service := &PostService{endpoint}
+func NewPostService(httpClient httpclient.HTTPClient) *PostService {
+	service := &PostService{httpClient}
 	return service
 }
 
 func (postService *PostService) GetPosts() ([]Post, error) {
-	resp, err := http.Get(postService.endpoints)
+	resp, err := postService.httpClient.Get(getPostsEndpoint)
 	if err != nil {
 		return nil, err
 	}
