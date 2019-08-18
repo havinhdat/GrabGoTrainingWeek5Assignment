@@ -5,3 +5,7 @@ type Comment struct {
 	Body   string `json:"body"`
 	PostID int64  `json:"postId"`
 }
+
+type CommentInterface interface {
+	GetComments() ([]Comment, error)
+}

@@ -6,20 +6,16 @@ import (
 	"net/http"
 )
 
-type PostWithCommentsInterface interface {
-	GetPostWithComments() ([]pwc.PostWithComments, error)
-}
-
 type RendererInterface interface {
 	Render(interface{}) ([]byte, string, error)
 }
 
 type PostWithCommentHttpService struct {
-	postWithCommentService PostWithCommentsInterface
+	postWithCommentService pwc.PostWithCommentsInterface
 	renderService          RendererInterface
 }
 
-func NewPostWithCommentHttpService(pwcService PostWithCommentsInterface, renderService RendererInterface) *PostWithCommentHttpService {
+func NewPostWithCommentHttpService(pwcService pwc.PostWithCommentsInterface, renderService RendererInterface) *PostWithCommentHttpService {
 	service := &PostWithCommentHttpService{pwcService, renderService}
 	return service
 }

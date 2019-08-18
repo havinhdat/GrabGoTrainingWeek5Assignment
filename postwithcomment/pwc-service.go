@@ -5,20 +5,12 @@ import (
 	"grab/week5/GrabGoTrainingWeek5Assignment/post"
 )
 
-type PostInterface interface {
-	GetPosts() ([]post.Post, error)
-}
-
-type CommentInterface interface {
-	GetComments() ([]comment.Comment, error)
-}
-
 type PostWithCommentService struct {
-	postService    PostInterface
-	commentService CommentInterface
+	postService    post.PostInterface
+	commentService comment.CommentInterface
 }
 
-func NewPostWithCommentService(postService PostInterface, commentService CommentInterface) *PostWithCommentService {
+func NewPostWithCommentService(postService post.PostInterface, commentService comment.CommentInterface) *PostWithCommentService {
 	service := &PostWithCommentService{postService, commentService}
 	return service
 }

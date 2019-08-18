@@ -7,3 +7,7 @@ type PostWithComments struct {
 	Title    string            `json:"string"`
 	Comments []comment.Comment `json:"comments,omitempty"`
 }
+
+type PostWithCommentsInterface interface {
+	GetPostWithComments() ([]PostWithComments, error)
+}
