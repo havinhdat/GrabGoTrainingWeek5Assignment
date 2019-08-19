@@ -22,6 +22,7 @@ type PostCommentsWorker interface {
 
 type PostCommentsWorkerImp struct {}
 
+// CommentWorker Constructor
 func CreatePostCommentsWorker() *PostCommentsWorkerImp{
 	return &PostCommentsWorkerImp{}
 }

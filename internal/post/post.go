@@ -18,10 +18,11 @@ type PostWorker interface {
 
 type PostWorkerImp struct {}
 
+// PostWorker Contructor
 func CreatePostWorker() *PostWorkerImp{
 	return &PostWorkerImp{}
 }
-
+// Get all post from post endpoint
 func (post *PostWorkerImp) GetPosts() ([]Post, error) {
 
 	httpWorker := httpworker.CreateHTTPWorker()
