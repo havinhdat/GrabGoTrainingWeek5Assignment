@@ -87,6 +87,7 @@ func TestGetPosts(t *testing.T) {
 		})
 	}
 }
+
 func TestGetComments(t *testing.T) {
 	var (
 		expectedComments = []entity.Comment{
