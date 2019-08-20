@@ -19,9 +19,9 @@ func TestHanldeImplGet(t *testing.T) {
 	mockComment := []model.Comment{{ID: 1, Body: "body comment test", PostID: mockPost[0].ID}}
 	mockPostWithComments := []model.PostWithComments{{ID: mockPost[0].ID, Title: mockPost[0].Title, Comments: []model.Comment{{ID: mockComment[0].ID, Body: mockComment[0].Body, PostID: mockPost[0].ID}}}}
 	byte, _ := json.Marshal(mockPostWithComments)
-	jsonMimeResult := mimeGenerate.MimeResult{Body: byte, ContentType: mimeGenerate.Application_json}
+	jsonMimeResult := mimeGenerate.MimeResult{Body: byte, ContentType: mimeGenerate.ApplicationJson}
 	byte, _ = xml.Marshal(mockPostWithComments)
-	xmlMimeResult := mimeGenerate.MimeResult{Body: byte, ContentType: mimeGenerate.Application_json}
+	xmlMimeResult := mimeGenerate.MimeResult{Body: byte, ContentType: mimeGenerate.ApplicationJson}
 
 	type args struct {
 		writer  http.ResponseWriter
@@ -69,7 +69,7 @@ func TestHanldeImplGet(t *testing.T) {
 			mimeGenerateMock := &mimeGenerate.MockMimeGenerate{}
 			tc.doMockService(serviceMock)
 			tc.doMockMine(mimeGenerateMock)
-			hanlde, err := NewHandle(serviceMock, mimeGenerateMock)
+			hanlde, err := NewHandler(serviceMock, mimeGenerateMock)
 			assert.Nil(t, err)
 			hanlde.Get(tc.args.writer, tc.args.request)
 

@@ -6,21 +6,21 @@ import (
 )
 
 const (
-	Application_json ContentType = "application/json"
-	Application_xml  ContentType = "application/xml"
+	ApplicationJson ContentType = "application/json"
+	ApplicationXml  ContentType = "application/xml"
 )
 
 func (e ContentType) GetAsString() string {
 	switch e {
-	case Application_xml:
+	case ApplicationXml:
 		return "application/xml"
 	default:
 		return "application/json"
 	}
 }
 
-//go:generate mockery -name=MimeGenerate -inpkg
-type MimeGenerate interface {
+//go:generate mockery -name=MimeGenerator -inpkg
+type MimeGenerator interface {
 	Generate(orgObj interface{}) (result MimeResult, err error)
 	GetGenerateType() string
 }
@@ -32,40 +32,40 @@ type MimeResult struct {
 
 type ContentType string
 
-type JsonMimeGenerate struct {
+type jsonMimeGenerator struct {
 }
 
-func NewJsonMimeGenerate() MimeGenerate {
-	return &JsonMimeGenerate{}
+func NewJsonMimeGenerator() MimeGenerator {
+	return &jsonMimeGenerator{}
 }
 
-func (j JsonMimeGenerate) Generate(orgObj interface{}) (result MimeResult, err error) {
+func (j *jsonMimeGenerator) Generate(orgObj interface{}) (result MimeResult, err error) {
 	var buf []byte
 	if buf, err = json.Marshal(orgObj); err != nil {
 		return
 	}
-	result = MimeResult{Body: buf, ContentType: Application_json}
+	result = MimeResult{Body: buf, ContentType: ApplicationJson}
 	return
 }
-func (j JsonMimeGenerate) GetGenerateType() string {
-	return Application_json.GetAsString()
+func (j *jsonMimeGenerator) GetGenerateType() string {
+	return ApplicationJson.GetAsString()
 }
 
-type XmlMimeGenerate struct {
+type xmlMimeGenerator struct {
 }
 
-func NewXmlMimeGenerate() MimeGenerate {
-	return &XmlMimeGenerate{}
+func NewXmlMimeGenerator() MimeGenerator {
+	return &xmlMimeGenerator{}
 }
 
-func (x XmlMimeGenerate) Generate(orgObj interface{}) (result MimeResult, err error) {
+func (x *xmlMimeGenerator) Generate(orgObj interface{}) (result MimeResult, err error) {
 	var buf []byte
 	if buf, err = xml.Marshal(orgObj); err != nil {
 		return
 	}
-	result = MimeResult{Body: buf, ContentType: Application_xml}
+	result = MimeResult{Body: buf, ContentType: ApplicationXml}
 	return
 }
-func (j XmlMimeGenerate) GetGenerateType() string {
-	return Application_xml.GetAsString()
+func (j *xmlMimeGenerator) GetGenerateType() string {
+	return ApplicationXml.GetAsString()
 }

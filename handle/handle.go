@@ -8,16 +8,16 @@ import (
 )
 
 //go:generate mockery -name=Handle -inpkg
-type Handle interface {
+type Handler interface {
 	Get(writer http.ResponseWriter, request *http.Request)
 }
 
-type hanldeImpl struct {
-	mimeGenerate mimeGenerate.MimeGenerate
+type hanlderImpl struct {
+	mimeGenerate mimeGenerate.MimeGenerator
 	service      service.Service
 }
 
-func (h hanldeImpl) Get(writer http.ResponseWriter, request *http.Request) {
+func (h *hanlderImpl) Get(writer http.ResponseWriter, request *http.Request) {
 	postWithComments, err := h.service.GetPostWithComments()
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
@@ -33,9 +33,9 @@ func (h hanldeImpl) Get(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-func NewHandle(service service.Service, mimeGenerate mimeGenerate.MimeGenerate) (handle Handle, err error) {
+func NewHandler(service service.Service, mimeGenerate mimeGenerate.MimeGenerator) (handle Handler, err error) {
 	if service == nil || mimeGenerate == nil {
-		return nil, errors.New("missing argument to get new hanle")
+		return nil, errors.New("missing argument to get new handle")
 	}
-	return &hanldeImpl{service: service, mimeGenerate: mimeGenerate}, nil
+	return &hanlderImpl{service: service, mimeGenerate: mimeGenerate}, nil
 }
