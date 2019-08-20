@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	httpclient "../http-client"
+	httpclient "thien.com/http-client"
 )
 
 const (

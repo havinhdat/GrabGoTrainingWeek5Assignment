@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	servicehandler "./service-handler"
+	servicehandler "thien.com/service-handler"
 )
 
 //TODO: how to separate API logic, business logic and response format logic

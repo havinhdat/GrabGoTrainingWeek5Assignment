@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	getapi "../get-api"
-	responsebuilder "../response_builder"
+	getapi "thien.com/get-api"
+	responsebuilder "thien.com/response_builder"
 )
 
 const (
@@ -15,24 +15,24 @@ const (
 	contentXml  = "application/xml"
 )
 
-type resultWriter struct {
+type ResultWriter struct {
 	result []byte
 }
 
-func (resWriter *resultWriter) Write(p []byte) (n int, err error) {
+func (resWriter *ResultWriter) Write(p []byte) (n int, err error) {
 	resWriter.result = p
 	return len(p), nil
 }
 
 type serviceHandlerImpl struct {
 	builder     *responsebuilder.ResponseBuilderImpl
-	resWriter   *resultWriter
+	resWriter   *ResultWriter
 	contentType string
 }
 
 func Get(isJson bool) func(http.ResponseWriter, *http.Request) {
 	var service serviceHandlerImpl
-	var resWriter = resultWriter{}
+	var resWriter = ResultWriter{}
 	if isJson {
 		service = serviceHandlerImpl{
 			builder:     responsebuilder.New(json.NewEncoder(&resWriter)),

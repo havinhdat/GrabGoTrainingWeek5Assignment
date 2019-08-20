@@ -1,8 +1,8 @@
 package responsebuilder
 
 import (
-	enres "../encode-response"
-	getapi "../get-api"
+	enres "thien.com/encode-response"
+	getapi "thien.com/get-api"
 )
 
 type PostWithCommentsResponse struct {
@@ -11,7 +11,7 @@ type PostWithCommentsResponse struct {
 
 type PostWithComments struct {
 	ID       int64            `json:"id"`
-	Title    string           `json:"string"`
+	Title    string           `json:"title"`
 	Comments []getapi.Comment `json:"comments,omitempty" xml:"Comments>Comment"`
 }
 
@@ -19,6 +19,7 @@ type ResponseBuilderImpl struct {
 	render enres.EncodeResponse
 }
 
+//Build response the result to the writer inside render
 func (builder *ResponseBuilderImpl) Build(iposts []getapi.Post, icomments []getapi.Comment) error {
 	postWithComments := combinePostWithComments(iposts, icomments)
 	resp := PostWithCommentsResponse{Posts: postWithComments}
