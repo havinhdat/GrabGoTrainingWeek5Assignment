@@ -13,11 +13,7 @@ const (
 	getCommentsEndpoint = "https://my-json-server.typicode.com/typicode/demo/comments"
 )
 
-func ChooseType(isJson bool) func(http.ResponseWriter, *http.Request) {
-	return handle
-}
-
-func handle(writer http.ResponseWriter, request *http.Request) {
+func HandleFunc(writer http.ResponseWriter, request *http.Request, isJSON bool) {
 	process := new(dataloader.SeviceLoader)
 	combineData := new(dataloader.CombineSeviceLoader)
 	render := new(dataloader.RenderServiceLoader)
@@ -34,5 +30,5 @@ func handle(writer http.ResponseWriter, request *http.Request) {
 	handleerror.HandleError(writer, err, "unable to parse response")
 
 	resp := defination.PostWithCommentsResponse{Posts: postWithComments}
-	render.Render(writer, resp, false)
+	render.Render(writer, resp, isJSON)
 }
