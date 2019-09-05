@@ -10,36 +10,7 @@ import (
 	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/formatter"
 )
 
-type requestHandler struct {
-	endPoint  string
-	useCase   usecase.Usecase
-	formatter formatter.Formatter
-}
-
-func handleRequest(rq *requestHandler) {
-	http.HandleFunc(rq.endPoint, func(writer http.ResponseWriter, request *http.Request) {
-		// executing usecase
-		ret, err := rq.useCase.Execute()
-		if err != nil {
-			log.Println("execute usecase failed with error: ", err)
-			writer.WriteHeader(500)
-			return
-		}
-
-		// encoding data
-		buf, err := rq.formatter.Encode(ret)
-		if err != nil {
-			log.Println("unable to parse response: ", err)
-			writer.WriteHeader(500)
-		}
-
-		// response to client
-		writer.Header().Set("Content-Type", rq.formatter.GetContentType())
-		_, err = writer.Write(buf)
-	})
-}
-
-func newGetPostsWithCommentsUsecase() *usecase.GetPostsWithCommentsUsecase {
+func newGetPostsWithCommentsUsecase() usecase.GetPostsWithCommentsUsecase {
 	dataFormatter := &dataformatter.JSONDataFormatter{}
 	postData := data.NewPostData(dataFormatter)
 	getPostsUsecase := usecase.NewGetPostsUsecase(postData)
@@ -49,19 +20,37 @@ func newGetPostsWithCommentsUsecase() *usecase.GetPostsWithCommentsUsecase {
 	return usecase.NewGetPostsWithCommentsUsecase(getPostsUsecase, getCommentsUsecase)
 }
 
-func main() {
+func getPostsWithCommentsHandler(writer http.ResponseWriter, request *http.Request) {
 	// define my mapper
 	myFormatter := &formatter.JSONFormatter{
 		ContentType: "application/json",
 	}
 	// define usecase
 	getPostsWithCommentsUsecase := newGetPostsWithCommentsUsecase()
+
+	// executing usecase
+	ret, err := getPostsWithCommentsUsecase.GetPostsWithComments()
+	if err != nil {
+		log.Println("execute usecase failed with error: ", err)
+		writer.WriteHeader(500)
+		return
+	}
+
+	// encoding data
+	buf, err := myFormatter.Encode(ret)
+	if err != nil {
+		log.Println("unable to parse response: ", err)
+		writer.WriteHeader(500)
+	}
+
+	// response to client
+	writer.Header().Set("Content-Type", myFormatter.GetContentType())
+	_, err = writer.Write(buf)
+}
+
+func main() {
 	// define handler
-	handleRequest(&requestHandler{
-		endPoint:  "/posts-with-comments",
-		useCase:   getPostsWithCommentsUsecase,
-		formatter: myFormatter,
-	})
+	http.HandleFunc("/posts-with-comments", getPostsWithCommentsHandler)
 
 	log.Println("httpServer starts ListenAndServe at 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

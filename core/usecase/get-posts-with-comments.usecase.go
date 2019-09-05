@@ -4,44 +4,30 @@ import (
 	"github.com/nhaancs/GrabGoTrainingWeek5Assignment/core/entity"
 )
 
-//GetPostsWithCommentsUsecase usecase
-type GetPostsWithCommentsUsecase struct {
-	GetPosts *GetPostsUsecase
-	GetComments *GetCommentsUsecase
+//GetPostsWithCommentsV1 usecase
+type getPostsWithCommentsV1 struct {
+	GetPosts GetPostsUsecase
+	GetComments GetCommentsUsecase
 }
 
 // NewGetPostsWithCommentsUsecase func
-func NewGetPostsWithCommentsUsecase(getPosts *GetPostsUsecase, getComments *GetCommentsUsecase) *GetPostsWithCommentsUsecase {
-	return &GetPostsWithCommentsUsecase {
+func NewGetPostsWithCommentsUsecase(getPosts GetPostsUsecase, getComments GetCommentsUsecase) GetPostsWithCommentsUsecase {
+	return &getPostsWithCommentsV1 {
 		GetPosts: getPosts,
 		GetComments: getComments,
 	}
 }
 
-// Execute GetPostsWithCommentsUsecase
-func (usecase *GetPostsWithCommentsUsecase) Execute(params... interface{}) (interface{}, error) {
-	postsData, err := usecase.GetPosts.Execute()
+// GetPostsWithComments GetPostsWithCommentsUsecase
+func (usecase *getPostsWithCommentsV1) GetPostsWithComments() (*entity.PostsWithComments, error) {
+	posts, err := usecase.GetPosts.GetPosts()
 	if err != nil {
-		return nil, err
+		return &entity.PostsWithComments{}, err
 	}
 
-	commentsData, err := usecase.GetComments.Execute()
+	comments, err := usecase.GetComments.GetComments()
 	if err != nil {
-		return nil, err
-	}
-
-	// TODO: remove postsData.([]entity.Post) 
-	// Go don't have generic
-	posts, ok := postsData.([]entity.Post)
-	if !ok {
-		return nil, errTypeCasting
-	}
-
-	// TODO: remove commentsData.([]entity.Comment)
-	// Go don't have generic
-	comments, ok := commentsData.([]entity.Comment)
-	if !ok {
-		return nil, errTypeCasting
+		return &entity.PostsWithComments{}, err
 	}
 
 	return combinePostsWithComments(posts, comments), nil
